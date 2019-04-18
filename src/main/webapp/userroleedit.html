@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>滴答办公系统-学科新增</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="media/layui/css/layui.css" media="all">
+    <script type="text/javascript" src="./media/js/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="layui-container" style="margin-top: 5px">
+
+    <div class="layui-col-xs2">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" onclick="searchStaff()"><i class="layui-icon layui-icon-search">查询员工</i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form class="layui-form" method="get" onsubmit="return false;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">工号</label>
+            <div class="layui-input-block">
+                <input type="text" name="no" lay-verify="name" autocomplete="off"
+                       placeholder="请输入编号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="name" autocomplete="off"
+                       placeholder="请输入姓名" id="name" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="password" lay-verify="name" autocomplete="off"
+                       placeholder="请输入密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <select name="type">
+                    <option value="1">有效</option>
+                    <option value="2">无效</option>
+
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item">
+            <input class="layui-btn" type="submit" value="确认新增">
+        </div>
+    </form>
+</div>
+
+
+<script src="media/layui/layui.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui
+        .use(
+            [ 'form', 'laydate' ],
+            function() {
+                var form = layui.form, layer = layui.layer, laydate = layui.laydate;
+
+                //日期
+                laydate.render({
+                    elem : '#date'
+                });
+
+
+                //自定义验证规则
+                form.verify({
+                    title : function(value) {
+                        if (value.length < 5) {
+                            return '标题至少得5个字符啊';
+                        }
+                    },
+                    pass : [ /(.+){6,12}$/, '密码必须6到12位' ],
+                    content : function(value) {
+                        layedit.sync(editIndex);
+                    }
+                });
+
+            });
+
+    function searchStaff() {
+        $.ajax({
+            type:"get",
+            url:"staffSertch.do",
+            data:{no:$(" input[ name='no' ] ").val()},
+            dataType:"json",
+            success:function (data) {
+                if(data.code == 1){
+                    if(data.info != null) {
+                        $("#name").val(data.info.name);
+                    } else {
+                        alert("找不到该用户，清重新输入");
+                    }
+                }
+            }
+        })
+    }
+
+    $("form").submit(function () {
+            $.ajax({
+                type:"get",
+                url:"useradd.do",
+                data:$("form").serialize(),
+                dataType:"json",
+                success:function (data) {
+                    if(data.code == 1){
+                            window.location.href = "userlimit.html"
+                    } else {
+                        alert(data.info);
+                    }
+                }
+        })
+    })
+</script>
+</body>
+</html>

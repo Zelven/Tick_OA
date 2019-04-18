@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.AuthorityMapper">
+  <resultMap id="BaseResultMap" type="com.qianfeng.entity.Authority">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="aicon" jdbcType="VARCHAR" property="aicon" />
+    <result column="aurl" jdbcType="VARCHAR" property="aurl" />
+    <result column="parentId" jdbcType="INTEGER" property="parentid" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, aicon, aurl, parentId, title, type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_authority
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_authority
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qianfeng.entity.Authority">
+    insert into t_authority (id, aicon, aurl, 
+      parentId, title, type
+      )
+    values (#{id,jdbcType=INTEGER}, #{aicon,jdbcType=VARCHAR}, #{aurl,jdbcType=VARCHAR}, 
+      #{parentid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qianfeng.entity.Authority">
+    insert into t_authority
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="aicon != null">
+        aicon,
+      </if>
+      <if test="aurl != null">
+        aurl,
+      </if>
+      <if test="parentid != null">
+        parentId,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="aicon != null">
+        #{aicon,jdbcType=VARCHAR},
+      </if>
+      <if test="aurl != null">
+        #{aurl,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null">
+        #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qianfeng.entity.Authority">
+    update t_authority
+    <set>
+      <if test="aicon != null">
+        aicon = #{aicon,jdbcType=VARCHAR},
+      </if>
+      <if test="aurl != null">
+        aurl = #{aurl,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null">
+        parentId = #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qianfeng.entity.Authority">
+    update t_authority
+    set aicon = #{aicon,jdbcType=VARCHAR},
+      aurl = #{aurl,jdbcType=VARCHAR},
+      parentId = #{parentid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+ <!-- <resultMap id="menuMap" type="com.qianfeng.vo.VMenu">
+    <id property="id" column="pid"/>
+    <result property="menuName" column="ptitle"/>
+    <result property="url" column="paurl"/>
+    <collection property="menuList" javaType="java.util.ArrayList"
+             ofType="com.qianfeng.vo.VMenu">
+
+      <id property="id" column="cid"/>
+      <result property="menuName" column="ctitle"/>
+      <result property="url" column="caurl"/>
+    </collection>
+
+  </resultMap>
+  <select id="queryRole" parameterType="int" resultMap="menuMap">
+
+    select p.id pid,p.title ptitle,p.aurl paurl
+    c.id cid,c.title ctitle,c.aurl caurl
+    from t_authority c
+    inner join t_authority p
+    on c.parentId = p.id
+    inner join t_userrole ur
+    on ur.rid = c.id
+    inner join t_user u
+    on u.id = ur.uid
+    where u.id = #{uid}
+  </select>-->
+
+  <select id="queryAll" resultType="com.qianfeng.entity.Authority">
+
+    select * from t_authority
+  </select>
+</mapper>
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>滴答办公系统-学科新增</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="media/layui/css/layui.css" media="all">
+    <script type="text/javascript" src="media/js/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="layui-container" style="margin-top: 5px">
+    <form class="layui-form" action="courseadd.do" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">学科名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="name" autocomplete="off"
+                       placeholder="请输入名称" class="layui-input">
+                <input type="hidden" name="flag" value="1" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">成立日期</label>
+            <div class="layui-input-block">
+                <input type="text" name="createdate" id="date" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">学科周期</label>
+            <div class="layui-input-block">
+                <input type="text" name="week" lay-verify="name" autocomplete="off"
+                       placeholder="请输入周期" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">学科类型</label>
+            <div class="layui-input-block">
+                <select name="type">
+                    <option value="1">普通</option>
+                    <option value="2">精品</option>
+                    <option value="3">业余</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-submit="" lay-filter="add" style="margin-left: 10%">确认新增</button>
+            <button class="layui-btn" onclick="back()" style="margin-left: 10%">返回</button>
+        </div>
+    </form>
+</div>
+
+
+<script src="media/layui/layui.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui
+        .use(
+            ['form', 'laydate'],
+            function () {
+                var form = layui.form, layer = layui.layer, laydate = layui.laydate;
+
+                //日期
+                laydate.render({
+                    elem: '#date'
+                });
+
+
+                //自定义验证规则
+                form.verify({
+                    title: function (value) {
+                        if (value.length < 5) {
+                            return '标题至少得5个字符啊';
+                        }
+                    },
+                    week: [/^\d{1,2}$/, '学科周期为100以内正整数']
+                });
+
+                //监听提交:这里注意form.on函数定义的位置，要与验证规则平级，在layui.use的参数：function函数体内
+                // 监听表单的提交事件，取值和提交按钮lay-filter相关
+                // data 表示表单中输入的数据
+                form.on('submit(add)', function (data) {
+                    // 发送ajax请求
+                    $.ajax({
+                        type: "get",
+                        url: "courseadd.do",
+                        data: data.field,
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 1) {
+                                var t = parent.layui.table;// 上面写法也可以用
+                                t.reload('tbdata');// 重新加载页面
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            }
+                        }
+
+                    })
+                    // 阻止默认的提交
+                    return false;
+                })
+
+            });
+
+    // 关闭弹窗
+    function back() {
+        var t = parent.layui.table;// 上面写法也可以用
+        t.reload('tbdata');// 重新加载页面
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+</script>
+</body>
+</html>

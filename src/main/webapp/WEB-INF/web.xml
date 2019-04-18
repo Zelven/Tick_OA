@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>Tick_OA</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <!-- post 方式的中文乱码解决 -->
+  <filter>
+  	<filter-name>characterEncoding</filter-name>
+  	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+  	<init-param>
+  		<param-name>encoding</param-name>
+  		<param-value>utf8</param-value>
+  	</init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>characterEncoding</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- 引入spring mvc的核心控制器 配置 -->
+  <servlet>
+  	<servlet-name>DispatchServlet</servlet-name>
+  	<!-- spring官方提供的org.springframework.web.servlet.DispatcherServlet -->
+  	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  	<!-- 指定加载哪个配置文件 -->
+  	<init-param>
+  		<param-name>contextConfigLocation</param-name>
+  		<param-value>classpath:spring-mvc.xml</param-value>
+  	</init-param>
+  	<!-- tomcat服务器启动时，创建servlet对象 -->
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DispatchServlet</servlet-name>
+  	<!-- 某些情况下，需要使用不带后缀的url路径，针对这种需求，url-pattern 只能使用/或者/*
+  		/*还会匹配jsp的资源，所以我们一般使用/
+  	 -->
+  	<url-pattern>/</url-pattern>
+<!--   	<url-pattern>*.do</url-pattern> -->
+  </servlet-mapping>
+  
+  <!-- 配置HiddenHttpMethodFilter,将 post转为 put or delete提交方式 -->
+  <filter>
+      <filter-name>HiddenHttpMethodFilter</filter-name>
+      <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>HiddenHttpMethodFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  
+  
+  <!-- spring的核心配置 -->
+	  <context-param>
+	    <param-name>contextConfigLocation</param-name>
+	    <!-- classpath相当于/WEB-INF/classes -->
+	    <param-value>classpath:spring-bean.xml</param-value>
+	<!--     <param-value>/WEB-INF/classes/bean.xml</param-value> -->
+	  </context-param>
+	
+	  <listener>
+	    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	  </listener>
+
+    <!-- 添加shiro过滤器 这里的filter-name 要和spring 的配置 里的
+org.apache.shiro.spring.web.ShiroFilterFactoryBean 的bean name 相同-->
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <!-- 该值缺省为false，表示声明周期由SpringApplicationContext管理，设置为true表示ServletContainer管理 -->
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+</web-app>

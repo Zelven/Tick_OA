@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.UserDao">
+  <!--1645-->
+  <resultMap id="BaseResultMap" type="com.qianfeng.entity.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="headphoto" jdbcType="VARCHAR" property="headphoto" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, no, password, name, flag, headphoto
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qianfeng.entity.User">
+    insert into t_user (id, no, password, 
+      name, flag, headphoto
+      )
+    values (#{id,jdbcType=INTEGER}, #{no,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{headphoto,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qianfeng.entity.User">
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="no != null">
+        no,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="flag != null">
+        flag,
+      </if>
+      <if test="headphoto != null">
+        headphoto,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="no != null">
+        #{no,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null">
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="headphoto != null">
+        #{headphoto,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    <selectKey keyProperty="id" order="AFTER" resultType="int">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qianfeng.entity.User">
+    update t_user
+    <set>
+      <if test="no != null">
+        no = #{no,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null">
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="headphoto != null">
+        headphoto = #{headphoto,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qianfeng.entity.User">
+    update t_user
+    set no = #{no,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER},
+      headphoto = #{headphoto,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <!-- 权限管理 -->
+
+    <select id="findPwdByName" parameterType="string" resultType="string">
+		select password from t_user where no=#{no}
+	</select>
+
+    <select id="findRoleByName" parameterType="string" resultType="string">
+		select r.rname from t_user u
+		inner join user_role ur
+		on u.uid=ur.uid
+		inner join role r
+		on ur.rid=r.rid
+		where u.no=#{uname}
+	</select>
+
+    <select id="findPermisionByName" parameterType="string" resultType="string">
+		select distinct p.pdesc from t_user u
+		inner join user_role ur
+		on u.uid=ur.uid
+		inner join role_permision rp
+		on rp.rid=ur.rid
+		inner join permision p
+		on p.pid=rp.pid
+		where u.no=#{uname}
+	</select>
+
+  <select id="queryCount" resultType="java.lang.Integer">
+
+    select count(*) from t_user
+  </select>
+
+  <select id="findAllUser" resultType="com.qianfeng.vo.VUser">
+    select u.id,u.no,u.name,r.info,u.flag
+    from t_user u
+    inner join t_role r
+    on u.id = r.id
+
+    <where>
+      <if test="no != null">
+        and u.no like '%${no}%'
+      </if>
+
+    </where>
+    limit #{index},#{limit}
+  </select>
+
+  <select id="selectByNo" parameterType="string" resultType="com.qianfeng.entity.User">
+
+    select * from t_user where no=#{no}
+  </select>
+
+
+
+  <delete id="deleteById" parameterType="int">
+    delete from t_user where id=#{id}
+  </delete>
+
+
+<!--    重写MenuMap-->
+    <resultMap type="com.qianfeng.vo.VMenu" id="menuMap">
+        <id property="id" column="parid"/>
+        <result property="title" column="partitle"/>
+        <result property="url" column="parurl"/>
+        <collection property="childs" javaType="java.util.ArrayList" ofType="com.qianfeng.vo.VMenu">
+            <id property="id" column="sid"/>
+            <result property="title" column="sontitle"/>
+            <result property="url" column="sonurl"/>
+        </collection>
+
+    </resultMap>
+
+
+    <select id="queryMenu" parameterType="int" resultMap="menuMap">
+        SELECT a.id parid, a.title partitle,a.aurl parurl , s.id sid, s.title sontitle, s.aurl sonurl
+        from t_user u
+        RIGHT JOIN t_userrole ur ON u.id = ur.uid
+        RIGHT JOIN t_role r on ur.rid = r.id
+        RIGHT JOIN t_roleauthority ra on r.id = ra.rid
+        RIGHT JOIN t_authority a on a.id = ra.aid
+        inner JOIN t_authority s on s.parentId = a.id
+        WHERE u.id = #{id}
+  </select>
+
+
+
+ <!-- <select id="findByCondition" resultType="com.qianfeng.vo.VUser">
+
+    select u.id,u.no,u.name,r.info,u.flag
+    from t_user u
+    inner join t_role r
+    on u.id = r.id
+    <where>
+      
+      <if test="no != null">
+        and no like '%${no}%'
+      </if>
+      <if test="flag = 1">
+        and flag = 1
+      </if>
+      <if test="flag = 2">
+        and flag = 2
+
+      </if>
+      <if test="flag = 0">
+
+        and flag = *
+      </if>
+    </where>
+  </select>
+-->
+
+
+  <update id="updateFlag" parameterType="int">
+
+    update t_user set flag=#{flag} where id=#{id}
+  </update>
+
+  <insert id="addUser" parameterType="com.qianfeng.entity.User">
+
+      insert into t_user u(u.id,u.no,u.password,u.name,u.flag,u.headphone)
+      select u.id,r.no.u.password,r.name,r.flag,r.phone
+      from t_staff r
+      where r.id=#{id}
+  </insert>
+
+  <select id="findLeader" parameterType="java.lang.Integer" resultType="com.qianfeng.entity.User">
+        select u.* from t_user u INNER join t_userrole ur on u.id = ur.uid
+        where ur.rid &lt;= 3
+    </select>
+
+
+</mapper>

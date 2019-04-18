@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!--    //暂用 201904161042 -->
+
+<configuration>
+
+	<settings>
+	<!-- spring和mybatis整合后，需要指定使用的日志类 -->
+		<setting name="logImpl" value="log4j"/>
+	</settings>
+
+	<!-- 设置类型的别名 -->
+	<typeAliases>
+		<typeAlias type="com.qianfeng.entity.User" alias="user"/>
+		<typeAlias type="com.qianfeng.entity.Contact" alias="contact"/>
+		<typeAlias type="com.qianfeng.entity.Course" alias="course"/>
+		<typeAlias type="com.qianfeng.entity.Ddress" alias="ddress"/>
+		<typeAlias type="com.qianfeng.entity.Department" alias="department"/>
+		<typeAlias type="com.qianfeng.entity.Grade" alias="grade"/>
+		<typeAlias type="com.qianfeng.entity.Log" alias="log"/>
+		<typeAlias type="com.qianfeng.entity.Msg" alias="msg"/>
+		<typeAlias type="com.qianfeng.entity.Papers" alias="papers"/>
+		<typeAlias type="com.qianfeng.entity.Report" alias="report"/>
+		<typeAlias type="com.qianfeng.entity.Schedule" alias="schedule"/>
+		<typeAlias type="com.qianfeng.entity.Staff" alias="staff"/>
+		<typeAlias type="com.qianfeng.entity.Student" alias="student"/>
+		<typeAlias type="com.qianfeng.entity.Work" alias="work"/>
+	</typeAliases>
+
+
+	
+</configuration>
+
+
